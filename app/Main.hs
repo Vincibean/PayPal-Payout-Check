@@ -9,17 +9,21 @@ import Test.WebDriver.Session
 
 main :: IO ()
 main = runSession chromeConfig $ do
+  login
+  closeSession
+
+login :: WD ()
+login = do
   openPage "https://www.paypal.com/login"
   usr <- findElem ( ById "email" )
-  sendKeys "usr" usr
+  sendKeys "LefterisOTRL" usr
   btnNext <- findElem ( ById "btnNext" )
   click btnNext
   wait 1000000
   pwd <- findElem ( ById "password" )
-  sendKeys "pwd" pwd
+  sendKeys "T0werBr1dge@" pwd
   btnLogin <- findElem ( ById "btnLogin" )
   click btnLogin
-  closeSession
 
 
 chromeConfig :: WDConfig
