@@ -16,12 +16,12 @@ login :: WD ()
 login = do
   openPage "https://www.paypal.com/login"
   usr <- findElem ( ById "email" )
-  sendKeys "LefterisOTRL" usr
+  sendKeys "usr" usr
   btnNext <- findElem ( ById "btnNext" )
   click btnNext
   wait 1000000
   pwd <- findElem ( ById "password" )
-  sendKeys "T0werBr1dge@" pwd
+  sendKeys "pwd" pwd
   btnLogin <- findElem ( ById "btnLogin" )
   click btnLogin
 
