@@ -4,15 +4,18 @@ module Main where
 
 import Control.Concurrent
 import Control.Monad.State
+import System.Random
 import Test.WebDriver
 import Test.WebDriver.Session
 
 main :: IO ()
 main = runSession chromeConfig $ do
   login
-  wait $ 5 * seconds
+  waitIn <- io $ randomRIO (1, 10)
+  wait $ waitIn * seconds
   logout
-  wait $ 2 * seconds
+  waitOut <- io $ randomRIO (1, 5)
+  wait $ waitOut * seconds
   closeSession
 
 login :: WD ()
@@ -20,14 +23,17 @@ login = do
   openPage "https://www.paypal.com/login"
   usr <- findElem ( ById "email" )
   sendKeys "usr" usr
-  wait $ 1 * seconds
+  waitForUsr <- io $ randomRIO (1, 5)
+  wait $ waitForUsr * seconds
   btnNext <- findElem ( ById "btnNext" )
   click btnNext
-  wait $ 3 * seconds
+  waitForPwd <- io $ randomRIO (1, 5)
+  wait $ waitForPwd * seconds
   pwd <- findElem ( ById "password" )
   sendKeys "pwd" pwd
   btnLogin <- findElem ( ById "btnLogin" )
-  wait $ 1 * second
+  waitToLogin <- io $ randomRIO (1, 5)
+  wait $ waitToLogin * seconds
   click btnLogin
 
 logout :: WD ()
