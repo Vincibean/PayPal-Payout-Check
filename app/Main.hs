@@ -11,11 +11,11 @@ import Test.WebDriver.Session
 main :: IO ()
 main = runSession chromeConfig $ do
   login
-  waitIn <- io $ randomRIO (1, 10)
+  waitIn <- io $ randomRIO (1 * second, 10 * seconds)
   wait $ waitIn * seconds
   logout
-  waitOut <- io $ randomRIO (1, 5)
-  wait $ waitOut * seconds
+  waitOut <- io $ randomRIO (1 * second, 5 * seconds)
+  wait $ waitOut
   closeSession
 
 login :: WD ()
@@ -23,17 +23,17 @@ login = do
   openPage "https://www.paypal.com/login"
   usr <- findElem ( ById "email" )
   sendKeys "usr" usr
-  waitForUsr <- io $ randomRIO (1, 5)
-  wait $ waitForUsr * seconds
+  waitForUsr <- io $ randomRIO (1 * second, 5 * seconds)
+  wait $ waitForUsr
   btnNext <- findElem ( ById "btnNext" )
   click btnNext
-  waitForPwd <- io $ randomRIO (1, 5)
-  wait $ waitForPwd * seconds
+  waitForPwd <- io $ randomRIO (1 * second, 5 * seconds)
+  wait $ waitForPwd
   pwd <- findElem ( ById "password" )
   sendKeys "pwd" pwd
   btnLogin <- findElem ( ById "btnLogin" )
-  waitToLogin <- io $ randomRIO (1, 5)
-  wait $ waitToLogin * seconds
+  waitToLogin <- io $ randomRIO (1 * second, 5 * seconds)
+  wait $ waitToLogin
   click btnLogin
 
 logout :: WD ()
