@@ -8,11 +8,21 @@ import System.Random
 import Test.WebDriver
 import Test.WebDriver.Session
 
+type TransactionId = String
+type Total = Double
+type Unclaimed = Total
+type TransactionReport = (Total, Unclaimed)
+
 main :: IO ()
 main = runSession chromeConfig $ do
   login
   waitIn <- io $ randomRIO (1 * second, 10 * seconds)
   wait $ waitIn * seconds
+  
+  transactionIds <- getTransactionIds
+  fullTransactionReport <- traverse getTransactionReport transactionIds
+
+
   logout
   waitOut <- io $ randomRIO (1 * second, 5 * seconds)
   wait $ waitOut
@@ -35,6 +45,12 @@ login = do
   waitToLogin <- io $ randomRIO (1 * second, 5 * seconds)
   wait $ waitToLogin
   click btnLogin
+
+getTransactionIds :: WD [TransactionId]
+getTransactionIds = undefined
+
+getTransactionReport :: TransactionId -> WD TransactionReport
+getTransactionReport = undefined
 
 logout :: WD ()
 logout = do
