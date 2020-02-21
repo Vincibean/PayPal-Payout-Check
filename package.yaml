@@ -24,6 +24,10 @@ dependencies:
 - webdriver
 - mtl
 - random
+- aeson
+- bytestring
+- lens
+- lens-aeson
 
 library:
   source-dirs: src
@@ -49,3 +53,4 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - paypal-payout-check3
+    - hspec
