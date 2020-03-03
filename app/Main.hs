@@ -4,11 +4,15 @@ module Main where
 
 import Control.Concurrent
 import Control.Monad.State
+import Control.Lens
+import Data.Aeson.Lens
+import Data.Text 
+import Data.Text.Encoding (encodeUtf8)
 import System.Random
 import Test.WebDriver
 import Test.WebDriver.Session
 
-type TransactionId = String
+type TransactionId = Text
 type Total = Double
 type Unclaimed = Total
 type TransactionReport = (Total, Unclaimed)
@@ -47,10 +51,20 @@ login = do
   click btnLogin
 
 getTransactionIds :: WD [TransactionId]
-getTransactionIds = undefined
+getTransactionIds = do 
+  openPage "https://www.paypal.com/listing/transactions/activity?transactiontype=PAYOUTS&currency=ALL_TRANSACTIONS_CURRENCY&limit=&next_page_token=&need_actions=true&need_shipping_info=true&sort=time_created&archive=ACTIVE_TRANSACTIONS&entrypoint=&fromdate_year=2020&fromdate_month=1&fromdate_day=17&todate_year=2020&todate_month=1&todate_day=17"
+  src <- getSource
+  return $ extractTransactionIds src
+
+extractTransactionIds :: Text -> [TransactionId]
+extractTransactionIds txt = bs ^.. key "data".key "transactions".values.key "transactionId"._String
+ where bs = encodeUtf8 txt
 
 getTransactionReport :: TransactionId -> WD TransactionReport
-getTransactionReport = undefined
+getTransactionReport transactionId = do
+  let tId = unpack transactionId
+  openPage $ "https://www.paypal.com/activity/masspay/" ++ tId
+  undefined
 
 logout :: WD ()
 logout = do
