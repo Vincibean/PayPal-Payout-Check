@@ -48,3 +48,4 @@ tests:
     dependencies:
     - paypal-payout-check3
     - hspec
+    - directory
