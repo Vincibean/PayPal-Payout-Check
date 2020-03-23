@@ -25,12 +25,24 @@ main = hspec $ do
   describe "webdriver" $ do
       it "tinkering with XPath (data.html)" $ do
         wd <- getCurrentDirectory
-        txt' <- runSession chromeConfig $ do
+        (claimed', unclaimed') <- runSession chromeConfig $ do
           openPage $ "file://" ++ wd ++  "/test-resources/data.html"
           el <- findElem (ByXPath "//table/tbody/tr[1]/td[3]")
-          txt <- getText el
-          return txt
-        txt' `shouldBe` "£8.90 GBP"
+          claimed <- getText el
+          nel1 <- findElem (ByXPath "//table/tbody/tr[2]/td[3]")
+          unclaimed1 <- getText nel1
+          nel2 <- findElem (ByXPath "//table/tbody/tr[3]/td[3]")
+          unclaimed2 <- getText nel2
+          nel3 <- findElem (ByXPath "//table/tbody/tr[4]/td[3]")
+          unclaimed3 <- getText nel3
+          nel4 <- findElem (ByXPath "//table/tbody/tr[5]/td[3]")
+          unclaimed4 <- getText nel4
+          nel5 <- findElem (ByXPath "//table/tbody/tr[6]/td[3]")
+          unclaimed5 <- getText nel5
+          let unclaimed = [unclaimed1, unclaimed2, unclaimed3, unclaimed4, unclaimed5]
+          return (claimed, unclaimed)
+        claimed' `shouldBe` "£8.90 GBP"
+        unclaimed' `shouldBe` ["£0.01 GBP", "£0.02 GBP", "£0.03 GBP", "£0.04 GBP", "£0.05 GBP"]
 
 chromeConfig :: WDConfig
 chromeConfig = useBrowser chrome defaultConfig
