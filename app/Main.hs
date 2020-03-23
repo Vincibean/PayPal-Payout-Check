@@ -18,19 +18,25 @@ type Unclaimed = [Total]
 type TransactionReport = (Total, Unclaimed)
 
 main :: IO ()
-main = runSession chromeConfig $ do
+main = do
+  report <- scrape
+  print report
+
+scrape :: IO [TransactionReport]
+scrape = runSession chromeConfig scrape'
+
+scrape' :: WD [TransactionReport]
+scrape' = do
   login
   waitIn <- io $ randomRIO (1 * second, 10 * seconds)
   wait $ waitIn * seconds
-  
   transactionIds <- getTransactionIds
   fullTransactionReport <- traverse getTransactionReport transactionIds
-
-
   logout
   waitOut <- io $ randomRIO (1 * second, 5 * seconds)
   wait $ waitOut
   closeSession
+  return fullTransactionReport
 
 login :: WD ()
 login = do
