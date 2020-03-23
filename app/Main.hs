@@ -13,8 +13,8 @@ import Test.WebDriver
 import Test.WebDriver.Session
 
 type TransactionId = Text
-type Total = Double
-type Unclaimed = Total
+type Total = Text
+type Unclaimed = [Total]
 type TransactionReport = (Total, Unclaimed)
 
 main :: IO ()
@@ -64,7 +64,15 @@ getTransactionReport :: TransactionId -> WD TransactionReport
 getTransactionReport transactionId = do
   let tId = unpack transactionId
   openPage $ "https://www.paypal.com/activity/masspay/" ++ tId
-  undefined
+  claimed <- findElemInTable 1
+  unclaimed <- traverse findElemInTable [2..6] 
+  return (claimed, unclaimed)
+
+findElemInTable :: Int -> WD Text
+findElemInTable i = do
+  let j = pack . show $ i
+  el <- findElem . ByXPath $ "//table/tbody/tr[" `append` j `append` "]/td[3]"
+  getText el
 
 logout :: WD ()
 logout = do
